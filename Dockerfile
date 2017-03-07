@@ -26,4 +26,5 @@ RUN unzip /eclipse/${ECLIPSE_ZIP_FILE} & rm -f /eclipse/${ECLIPSE_ZIP_FILE}
 RUN chown developer:developer -R /eclipse
 WORKDIR /eclipse
 USER developer
-RUN /eclipse/eclipse
+#RUN /eclipse/eclipse
+ENTRYPOINT ["/eclipse/eclipse"]
