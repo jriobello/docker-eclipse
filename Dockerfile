@@ -2,7 +2,7 @@ FROM nimmis/java-centos:openjdk-8-jdk
 
 MAINTAINER LDEjieCAC@elkarlan.ejie.eus
 
-ENV proxyHost proxyejgv
+ENV proxyHost changeme
 ENV proxyPort 8080
 ENV proxyUser jriobell
 ENV proxyPassword *****
@@ -23,8 +23,7 @@ RUN mkdir /eclipse && \
 RUN yum -y install unzip
 RUN cd /eclipse & wget -e use_proxy=yes --no-check-certificate -P /eclipse -e http_proxy=${_proxyString} -e https_proxy=${_proxyString} ${ECLIPSE_NEON_ZIP_URL}
 RUN unzip /eclipse/${ECLIPSE_ZIP_FILE} & rm -f /eclipse/${ECLIPSE_ZIP_FILE}
-RUN mv /eclipse/eclipse /eclipse/neon
 RUN chown developer:developer -R /eclipse
 WORKDIR /eclipse
 USER developer
-RUN /eclipse/neon/eclipse
+RUN /eclipse/eclipse
