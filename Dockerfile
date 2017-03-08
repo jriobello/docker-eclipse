@@ -2,14 +2,12 @@ FROM nimmis/java-centos:openjdk-8-jdk
 
 MAINTAINER LDEjieCAC@elkarlan.ejie.eus
 
-ENV proxyHost changeme
+ENV proxyHost proxy
 ENV proxyPort 8080
-ENV proxyUser jriobell
-ENV proxyPassword *****
+ENV proxyUser user
+ENV proxyPassword password
 ENV ECLIPSE_ZIP_FILE "oepe-12.2.1.5-neon-distro-linux-gtk-x86_64.zip"
 ENV ECLIPSE_NEON_ZIP_URL "http://download.oracle.com/otn_software/oepe/12.2.1.5/neon/${ECLIPSE_ZIP_FILE}"
-#ENV ECLIPSE_ZIP_FILE "putty.zip"
-#ENV ECLIPSE_NEON_ZIP_URL "https://the.earth.li/~sgtatham/putty/latest/w64/${ECLIPSE_ZIP_FILE}"
 
 #Variables internas empiezan por _
 ENV _proxyString "http://${proxyUser}:${proxyPassword}@${proxyHost}:${proxyPort}"
@@ -17,14 +15,25 @@ ENV _proxyString "http://${proxyUser}:${proxyPassword}@${proxyHost}:${proxyPort}
 ENV http_proxy ${_proxyString}
 ENV https_proxy ${_proxyString}
 
+RUN yum -y install unzip
+RUN yum -y install libgnomeui libxtst gtk
+
 RUN mkdir /eclipse && \
     chmod a+xr /eclipse && \
     useradd -b /eclipse -m -s /bin/bash developer
-RUN yum -y install unzip
-RUN cd /eclipse & wget -e use_proxy=yes --no-check-certificate -P /eclipse -e http_proxy=${_proxyString} -e https_proxy=${_proxyString} ${ECLIPSE_NEON_ZIP_URL}
-RUN unzip /eclipse/${ECLIPSE_ZIP_FILE} & rm -f /eclipse/${ECLIPSE_ZIP_FILE}
-RUN chown developer:developer -R /eclipse
-WORKDIR /eclipse
+RUN chown developer:developer /eclipse/developer
+
+WORKDIR /eclipse/developer
 USER developer
-#RUN /eclipse/eclipse
-ENTRYPOINT ["/eclipse/eclipse"]
+RUN wget -e use_proxy=yes --no-check-certificate -e http_proxy=${_proxyString} -e https_proxy=${_proxyString} ${ECLIPSE_NEON_ZIP_URL}
+WORKDIR /eclipse/developer
+USER developer
+RUN unzip ${ECLIPSE_ZIP_FILE}
+WORKDIR /eclipse/developer
+USER developer
+RUN rm -f ${ECLIPSE_ZIP_FILE}
+
+WORKDIR /eclipse/developer
+USER developer
+CMD /eclipse/developer/eclipse -configuration /eclipse/developer/config
+#ENTRYPOINT ["/eclipse/developer/eclipse -configuration /eclipse/developer//config"]
