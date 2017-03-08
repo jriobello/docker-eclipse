@@ -23,17 +23,13 @@ RUN mkdir /eclipse && \
     useradd -b /eclipse -m -s /bin/bash developer
 RUN chown developer:developer /eclipse/developer
 
+#Es importante borrar en la misma linea para no hacer pesadas las imagenes
 WORKDIR /eclipse/developer
 USER developer
-RUN wget -e use_proxy=yes --no-check-certificate -e http_proxy=${_proxyString} -e https_proxy=${_proxyString} ${ECLIPSE_NEON_ZIP_URL}
-WORKDIR /eclipse/developer
-USER developer
-RUN unzip ${ECLIPSE_ZIP_FILE}
-WORKDIR /eclipse/developer
-USER developer
-RUN rm -f ${ECLIPSE_ZIP_FILE}
+RUN wget -e use_proxy=yes --no-check-certificate -e http_proxy=${_proxyString} -e https_proxy=${_proxyString} ${ECLIPSE_NEON_ZIP_URL} && \
+	unzip ${ECLIPSE_ZIP_FILE} && \
+	rm -f ${ECLIPSE_ZIP_FILE}
 
 WORKDIR /eclipse/developer
 USER developer
 CMD /eclipse/developer/eclipse -configuration /eclipse/developer/config
-#ENTRYPOINT ["/eclipse/developer/eclipse -configuration /eclipse/developer//config"]
