@@ -2,7 +2,7 @@ FROM nimmis/java-centos:openjdk-8-jdk
 
 MAINTAINER LDEjieCAC@elkarlan.ejie.eus
 
-ENV proxyHost proxy
+ENV proxyHost proxye
 ENV proxyPort 8080
 ENV proxyUser user
 ENV proxyPassword password
@@ -15,8 +15,9 @@ ENV _proxyString "http://${proxyUser}:${proxyPassword}@${proxyHost}:${proxyPort}
 ENV http_proxy ${_proxyString}
 ENV https_proxy ${_proxyString}
 
-RUN yum -y install unzip
-RUN yum -y install libgnomeui libxtst gtk
+RUN yum -y install unzip && \
+	yum -y install libgnomeui libxtst gtk && \
+	yum clean all
 
 RUN mkdir /eclipse && \
     chmod a+xr /eclipse && \
